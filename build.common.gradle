@@ -1,0 +1,25 @@
+android {
+    compileSdkVersion 27
+    buildToolsVersion '29.0.1'
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+    }
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+    implementation 'org.openftc:robotcore-stock:5.4'
+    implementation 'org.openftc:hardware-stock:5.4'
+    implementation 'org.projectlombok:lombok:1.18.6'
+    annotationProcessor 'org.projectlombok:lombok:1.18.6'
+    androidTestAnnotationProcessor 'org.projectlombok:lombok:1.18.6'
+    testImplementation 'org.mockito:mockito-core:2.27.0'
+    testImplementation 'com.google.guava:guava-testlib:27.1-android'
+    api 'com.google.guava:guava:27.1-android'
+}
+
+project.gradle.startParameter.excludedTaskNames.add('installDebugAndroidTest')
