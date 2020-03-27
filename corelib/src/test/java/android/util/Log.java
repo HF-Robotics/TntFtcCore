@@ -44,5 +44,10 @@ public class Log {
         return 0;
     }
 
+    public static int e(String tag, String msg, Throwable t) {
+        System.err.println("ERROR: " + tag + ": " + msg);
+        return 0;
+    }
+
     // add other methods if required...
 }
