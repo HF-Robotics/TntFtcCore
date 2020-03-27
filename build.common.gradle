@@ -10,8 +10,20 @@ android {
     }
 }
 
+apply plugin: "de.mannodermaus.android-junit5"
+
 dependencies {
-    testImplementation 'junit:junit:4.12'
+    // (Required) Writing and executing Unit Tests on the JUnit Platform
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.6.0"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.6.0"
+
+    // (Optional) If you need "Parameterized Tests"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:5.6.0"
+
+    // (Optional) If you also have JUnit 4-based tests
+    testImplementation "junit:junit:4.13"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:5.6.0"
+
     implementation 'org.openftc:robotcore-stock:5.4'
     implementation 'org.openftc:hardware-stock:5.4'
     implementation 'org.projectlombok:lombok:1.18.6'
