@@ -17,5 +17,5 @@ dependencies {
 }
 
 group = 'com.ftc9929'
-version = '1.0'
+version = '0.1'
 apply from: 'https://raw.githubusercontent.com/sky-uk/gradle-maven-plugin/master/gradle-mavenizer.gradle'
