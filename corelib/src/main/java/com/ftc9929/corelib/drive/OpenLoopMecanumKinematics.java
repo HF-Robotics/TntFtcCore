@@ -24,7 +24,8 @@ package com.ftc9929.corelib.drive;
 
 import com.qualcomm.robotcore.util.Range;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NonNull;
 
 /**
@@ -37,7 +38,6 @@ import lombok.NonNull;
  * Extend this class and override the abstract methods to set power levels
  * on the corresponding motors. For an example, see OpenLoopMecanumKinematicsTest.
  */
-@AllArgsConstructor
 public abstract class OpenLoopMecanumKinematics {
     public void driveCartesian(double xPower,
                                double yPower,
@@ -53,28 +53,30 @@ public abstract class OpenLoopMecanumKinematics {
             yPower = -yPower;
         }
 
-        WheelSpeeds wheelSpeeds = new WheelSpeeds(
-                xPower + yPower + rotationPower,  // left front
-                -xPower + yPower - rotationPower, // right front
-                -xPower + yPower + rotationPower, // left rear
-                xPower + yPower - rotationPower); // right rear
+        WheelSpeeds wheelSpeeds = WheelSpeeds.builder()
+                .leftFront(  xPower + yPower + rotationPower)
+                .rightFront(-xPower + yPower - rotationPower)
+                .leftRear(  -xPower + yPower + rotationPower)
+                .rightRear(  xPower + yPower - rotationPower).build();
+
         normalizeAndSetMotorPowers(wheelSpeeds);
     }
 
     private final static double MAX_MOTOR_OUTPUT = 1.0;
 
+    @Builder
     protected static class WheelSpeeds {
-        protected double leftFront;
-        protected double rightFront;
-        protected double leftRear;
-        protected double rightRear;
+        @Getter
+        private double leftFront;
 
-        WheelSpeeds(double leftFront, double rightFront, double leftRear, double rightRear) {
-            this.leftFront = leftFront;
-            this.rightFront = rightFront;
-            this.leftRear = leftRear;
-            this.rightRear = rightRear;
-        }
+        @Getter
+        private double rightFront;
+
+        @Getter
+        private double leftRear;
+
+        @Getter
+        private double rightRear;
 
         void clipToMaxOutput() {
             leftFront = Range.clip(leftFront, -MAX_MOTOR_OUTPUT, MAX_MOTOR_OUTPUT);

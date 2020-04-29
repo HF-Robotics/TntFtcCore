@@ -123,13 +123,13 @@ public class OpenLoopMecanumKinematicsTest {
 
         @Override
         protected void setMotorPowers(WheelSpeeds wheelSpeeds) {
-            leftFrontDriveMotor.setPower(wheelSpeeds.leftFront);
+            leftFrontDriveMotor.setPower(wheelSpeeds.getLeftFront());
 
-            leftRearDriveMotor.setPower(wheelSpeeds.leftRear);
+            leftRearDriveMotor.setPower(wheelSpeeds.getLeftRear());
 
-            rightFrontDriveMotor.setPower(wheelSpeeds.rightFront);
+            rightFrontDriveMotor.setPower(wheelSpeeds.getRightFront());
 
-            rightRearDriveMotor.setPower(wheelSpeeds.rightRear);
+            rightRearDriveMotor.setPower(wheelSpeeds.getRightRear());
         }
     }
 }
