@@ -22,7 +22,10 @@
 
 package com.ftc9929.corelib.control;
 
+import com.google.common.collect.ImmutableSet;
 import com.qualcomm.robotcore.hardware.Gamepad;
+
+import java.util.Set;
 
 /**
  * A more usable/adaptable game pad class. Creates OnOff and RangeInput buttons
@@ -153,6 +156,14 @@ public class NinjaGamePad {
                 return gamepad.right_stick_button;
             }
         };
+    }
+
+    public Set<OnOffButton> getAllButtons() {
+        return ImmutableSet.of(
+                getRightStickButton(), getLeftStickButton(),
+                getDpadUp(), getDpadDown(), getDpadLeft(), getDpadRight(),
+                getRightBumper(), getLeftBumper(),
+                getXButton(), getYButton(), getAButton(), getBButton());
     }
 
     public RangeInput getLeftStickY(){
