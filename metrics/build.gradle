@@ -1,0 +1,23 @@
+apply plugin: 'com.android.library'
+
+// Include common definitions from above.
+apply from: '../build.common.gradle'
+
+android {
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation files('libs/java-dogstatsd-client-2.9-SNAPSHOT.jar')
+    implementation project(path: ':corelib')
+    testImplementation project(path: ':fakeHardware')
+}
+
+group = 'com.ftc9929'
+version = '0.1'
+apply from: 'https://raw.githubusercontent.com/sky-uk/gradle-maven-plugin/master/gradle-mavenizer.gradle'

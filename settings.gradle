@@ -1,1 +1,1 @@
-include ':fakeHardware', ':corelib'
+include ':fakeHardware', ':corelib', ':metrics'
