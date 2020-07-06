@@ -30,8 +30,12 @@ public class MetricSamplerTests {
     @Test
     public void firstDoNoHarm() {
         HardwareMap hardwareMap = new HardwareMap(null); // bad design, won't fail until used!
-        MetricsReporter r = StatsdMetricsReporter.builder().metricsServerHost("").prefix("abcd").build();
+        MetricsReporter r = StatsdMetricsReporter.builder().metricsServerHost("").tags(new String[] {"abcd"}).build();
         RobotMetricsSampler s = RobotMetricsSampler.builder().metricsReporter(r).hardwareMap(hardwareMap).build();
+        s.doSamples();
+
+        r = StatsdMetricsReporter.builder().metricsServerHost("").build();
+        s = RobotMetricsSampler.builder().metricsReporter(r).hardwareMap(hardwareMap).build();
         s.doSamples();
     }
 }

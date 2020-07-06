@@ -42,28 +42,37 @@ public class StatsdMetricsReporter implements MetricsReporter {
 
     private final NonBlockingStatsDClient statsDClient;
 
+    private final String[] tags;
+
     /**
      * Create a new statsd metrics reporter configured to send metrics to the
      * statsd server listening on the provided hostname/port
      *
      * @param metricsServerHost hostname of the statsd server
      * @param metricsServerPortNumber port number of the statsd server - default of 8126 if not given
-     * @param prefix prefix all metrics sent with this string
+     * @param tags send the given tags with all metrics, each tag is formatted as tag_name:tag_value
      */
     @Builder
     private StatsdMetricsReporter(@NonNull String metricsServerHost,
                                   int metricsServerPortNumber,
-                                  String prefix) {
+                                  String[] tags) {
 
         if (metricsServerPortNumber == 0) {
             metricsServerPortNumber = DEFAULT_METRICS_SERVER_PORT_NUMBER;
+        }
+
+        if (tags == null) {
+            this.tags = new String[1]; // one space for timestamp
+        } else {
+            this.tags = new String[tags.length + 1];
+            System.arraycopy(tags, 0, this.tags, 0, tags.length);
         }
 
         try {
             Log.d(LOG_TAG, String.format("Setting up statsd client connection to %s:%d",
                     metricsServerHost, metricsServerPortNumber));
 
-            statsDClient = new NonBlockingStatsDClient(prefix, metricsServerHost, metricsServerPortNumber);
+            statsDClient = new NonBlockingStatsDClient("", metricsServerHost, metricsServerPortNumber);
         } catch (Exception ex) {
             throw new RuntimeException("Can't open statsd client", ex);
         }
@@ -79,16 +88,16 @@ public class StatsdMetricsReporter implements MetricsReporter {
             long beginSamplingTimeMs = System.currentTimeMillis();
 
             // Don't recompute the sample time for every sample, "close enough" is "good enough"
-            String timestampTag = new StringBuilder("ts-"
+            String timestampTag = new StringBuilder("_ts:"
                     + Long.toString(beginSamplingTimeMs)).toString();
 
-            String[] metricTags = new String[] { timestampTag };
+            tags[tags.length - 1] = timestampTag;
 
             for (GaugeMetricSource gaugeSource : gaugeSources) {
                 final double value = gaugeSource.getValue();
 
                 if (value != MetricsSampler.NO_REPORT_VALUE) {
-                    statsDClient.gauge(gaugeSource.getSampleName(), value, metricTags);
+                    statsDClient.gauge(gaugeSource.getSampleName(), value, tags);
                 }
             }
 
