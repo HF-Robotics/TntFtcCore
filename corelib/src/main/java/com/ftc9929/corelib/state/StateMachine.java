@@ -25,7 +25,6 @@ package com.ftc9929.corelib.state;
 import android.util.Log;
 
 import com.ftc9929.corelib.control.DebouncedButton;
-import com.ftc9929.corelib.control.DebouncedGamepadButtons;
 import com.ftc9929.corelib.control.NinjaGamePad;
 import com.google.common.base.Ticker;
 
@@ -67,7 +66,7 @@ public class StateMachine {
     @Setter
     private DebouncedButton doOverButton;
 
-    private DebouncedGamepadButtons allGamePadButtons;
+    private NinjaGamePad configureGamePad;
 
     private Telemetry telemetry;
 
@@ -84,8 +83,8 @@ public class StateMachine {
         areWeDebugging = false;
     }
 
-    public void setConfigureGamepad(NinjaGamePad configureGamepad) {
-        this.allGamePadButtons = new DebouncedGamepadButtons(configureGamepad);
+    public void setConfigureGamepad(NinjaGamePad configureGamePad) {
+        this.configureGamePad = configureGamePad;
     }
 
     public String getCurrentStateName() {
@@ -182,7 +181,7 @@ public class StateMachine {
                 }
             } else {
                 // we're paused, allowing live configuring and waiting for go or go back signals
-                currentState.liveConfigure(allGamePadButtons);
+                currentState.liveConfigure(configureGamePad);
 
                 // check for un-pausing
                 if (goButton.getRise()) {

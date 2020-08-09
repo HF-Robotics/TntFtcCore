@@ -23,7 +23,7 @@
 package com.ftc9929.corelib.state;
 
 import com.ftc9929.corelib.control.DebouncedButton;
-import com.ftc9929.corelib.control.DebouncedGamepadButtons;
+import com.ftc9929.corelib.control.NinjaGamePad;
 import com.google.common.base.Ticker;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -72,7 +72,7 @@ public class ButtonPressWithTimeoutState extends StopwatchTimeoutSafetyState {
     }
 
     @Override
-    public void liveConfigure(DebouncedGamepadButtons buttons) {
+    public void liveConfigure(NinjaGamePad configureGamePad) {
         // do nothing
     }
 }

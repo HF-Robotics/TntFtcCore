@@ -40,120 +40,240 @@ public class NinjaGamePad {
 
     public OnOffButton getAButton(){
         return new OnOffButton() {
+            private DebouncedButton debounced;
 
             @Override
             public boolean isPressed() {
                 return gamepad.a;
+            }
+
+            @Override
+            public DebouncedButton debounced() {
+                if (debounced == null) {
+                    debounced = new DebouncedButton(this);
+                }
+
+                return debounced;
             }
         };
     }
 
     public OnOffButton getBButton(){
         return new OnOffButton() {
+            private DebouncedButton debounced;
 
             @Override
             public boolean isPressed() {
                 return gamepad.b;
+            }
+
+            @Override
+            public DebouncedButton debounced() {
+                if (debounced == null) {
+                    debounced = new DebouncedButton(this);
+                }
+
+                return debounced;
             }
         };
     }
 
     public OnOffButton getXButton() {
         return new OnOffButton() {
+            private DebouncedButton debounced;
 
             @Override
             public boolean isPressed() {
                 return gamepad.x;
+            }
+
+            @Override
+            public DebouncedButton debounced() {
+                if (debounced == null) {
+                    debounced = new DebouncedButton(this);
+                }
+
+                return debounced;
             }
         };
     }
 
     public OnOffButton getYButton(){
         return new OnOffButton() {
+            private DebouncedButton debounced;
 
             @Override
             public boolean isPressed() {
                 return gamepad.y;
+            }
+
+            @Override
+            public DebouncedButton debounced() {
+                if (debounced == null) {
+                    debounced = new DebouncedButton(this);
+                }
+
+                return debounced;
             }
         };
     }
 
     public OnOffButton getLeftBumper(){
         return new OnOffButton() {
+            private DebouncedButton debounced;
 
             @Override
             public boolean isPressed() {
                 return gamepad.left_bumper;
+            }
+
+            @Override
+            public DebouncedButton debounced() {
+                if (debounced == null) {
+                    debounced = new DebouncedButton(this);
+                }
+
+                return debounced;
             }
         };
     }
 
     public OnOffButton getRightBumper(){
         return new OnOffButton() {
+            private DebouncedButton debounced;
 
             @Override
             public boolean isPressed() {
                 return gamepad.right_bumper;
+            }
+
+            @Override
+            public DebouncedButton debounced() {
+                if (debounced == null) {
+                    debounced = new DebouncedButton(this);
+                }
+
+                return debounced;
             }
         };
     }
 
     public OnOffButton getDpadUp(){
         return new OnOffButton() {
+            private DebouncedButton debounced;
 
             @Override
             public boolean isPressed() {
                 return gamepad.dpad_up;
+            }
+
+            @Override
+            public DebouncedButton debounced() {
+                if (debounced == null) {
+                    debounced = new DebouncedButton(this);
+                }
+
+                return debounced;
             }
         };
     }
 
     public OnOffButton getDpadDown(){
         return new OnOffButton() {
+            private DebouncedButton debounced;
 
             @Override
             public boolean isPressed() {
                 return gamepad.dpad_down;
+            }
+
+            @Override
+            public DebouncedButton debounced() {
+                if (debounced == null) {
+                    debounced = new DebouncedButton(this);
+                }
+
+                return debounced;
             }
         };
     }
 
     public OnOffButton getDpadLeft(){
         return new OnOffButton() {
+            private DebouncedButton debounced;
 
             @Override
             public boolean isPressed() {
                 return gamepad.dpad_left;
+            }
+
+            @Override
+            public DebouncedButton debounced() {
+                if (debounced == null) {
+                    debounced = new DebouncedButton(this);
+                }
+
+                return debounced;
             }
         };
     }
 
     public OnOffButton getDpadRight(){
         return new OnOffButton() {
+            private DebouncedButton debounced;
 
             @Override
             public boolean isPressed() {
                 return gamepad.dpad_right;
+            }
+
+            @Override
+            public DebouncedButton debounced() {
+                if (debounced == null) {
+                    debounced = new DebouncedButton(this);
+                }
+
+                return debounced;
             }
         };
     }
 
     public OnOffButton getLeftStickButton(){
         return new OnOffButton() {
+            private DebouncedButton debounced;
 
             @Override
             public boolean isPressed() {
                 return gamepad.left_stick_button;
+            }
+
+            @Override
+            public DebouncedButton debounced() {
+                if (debounced == null) {
+                    debounced = new DebouncedButton(this);
+                }
+
+                return debounced;
             }
         };
     }
 
     public OnOffButton getRightStickButton(){
         return new OnOffButton() {
+            private DebouncedButton debounced;
 
             @Override
             public boolean isPressed() {
                 return gamepad.right_stick_button;
+            }
+
+            @Override
+            public DebouncedButton debounced() {
+                if (debounced == null) {
+                    debounced = new DebouncedButton(this);
+                }
+
+                return debounced;
             }
         };
     }

@@ -25,7 +25,7 @@ package com.ftc9929.corelib.state;
 
 import android.util.Log;
 
-import com.ftc9929.corelib.control.DebouncedGamepadButtons;
+import com.ftc9929.corelib.control.NinjaGamePad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -59,7 +59,7 @@ public abstract class State {
 
     public abstract void resetToStart();
 
-    public abstract void liveConfigure(DebouncedGamepadButtons buttons);
+    public abstract void liveConfigure(NinjaGamePad gamePad);
 
     public String getName() {
         return name;

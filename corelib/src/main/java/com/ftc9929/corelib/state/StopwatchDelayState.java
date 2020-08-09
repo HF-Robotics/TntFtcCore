@@ -22,7 +22,7 @@
 
 package com.ftc9929.corelib.state;
 
-import com.ftc9929.corelib.control.DebouncedGamepadButtons;
+import com.ftc9929.corelib.control.NinjaGamePad;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Ticker;
 
@@ -57,7 +57,7 @@ public class StopwatchDelayState extends State {
     }
 
     @Override
-    public void liveConfigure(DebouncedGamepadButtons buttons) {
+    public void liveConfigure(NinjaGamePad configureGamePad) {
 
     }
 

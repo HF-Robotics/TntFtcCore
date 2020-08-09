@@ -26,6 +26,18 @@ package com.ftc9929.corelib.control;
  * Represents a digital (on/off) input on the gamepad
  */
 public interface OnOffButton {
+    /**
+     * Is the button currently pressed?
+     *
+     * @return true if the button is currently pressed, false if not.
+     */
     boolean isPressed();
-    
+
+    /**
+     * Returns a debounced version of this button. Any implementations of this method
+     * should return the same instance of a DebouncedButton for every call.
+     *
+     * @return a DebouncedButton from this button.
+     */
+    DebouncedButton debounced();
 }

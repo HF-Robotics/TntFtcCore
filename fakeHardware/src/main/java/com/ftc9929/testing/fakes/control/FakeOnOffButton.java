@@ -22,10 +22,13 @@
 
 package com.ftc9929.testing.fakes.control;
 
+import com.ftc9929.corelib.control.DebouncedButton;
 import com.ftc9929.corelib.control.OnOffButton;
 
 public class FakeOnOffButton implements OnOffButton {
     private boolean isPressed;
+
+    private DebouncedButton debounced;
 
     @Override
     public boolean isPressed() {
@@ -34,5 +37,14 @@ public class FakeOnOffButton implements OnOffButton {
 
     public void setPressed(boolean val) {
         isPressed = val;
+    }
+
+    @Override
+    public DebouncedButton debounced() {
+        if (debounced == null) {
+            debounced = new DebouncedButton(this);
+        }
+
+        return debounced;
     }
 }

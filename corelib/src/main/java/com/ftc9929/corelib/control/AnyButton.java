@@ -33,6 +33,8 @@ import java.util.Set;
 public class AnyButton implements OnOffButton {
     private final Set<OnOffButton> allButtons;
 
+    private DebouncedButton debounced;
+
     public AnyButton(OnOffButton... buttons /* shorthand for any amount of args */) {
 
         Set<OnOffButton> filteredButtons = new HashSet<>();
@@ -56,5 +58,14 @@ public class AnyButton implements OnOffButton {
         }
 
         return false;
+    }
+
+    @Override
+    public DebouncedButton debounced() {
+        if (debounced == null) {
+            debounced = new DebouncedButton(this);
+        }
+
+        return debounced;
     }
 }

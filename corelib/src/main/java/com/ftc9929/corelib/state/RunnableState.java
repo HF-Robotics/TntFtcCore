@@ -22,7 +22,7 @@
 
 package com.ftc9929.corelib.state;
 
-import com.ftc9929.corelib.control.DebouncedGamepadButtons;
+import com.ftc9929.corelib.control.NinjaGamePad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -54,7 +54,7 @@ public class RunnableState extends State {
     }
 
     @Override
-    public void liveConfigure(DebouncedGamepadButtons buttons) {
+    public void liveConfigure(NinjaGamePad configureGamePad) {
 
     }
 }

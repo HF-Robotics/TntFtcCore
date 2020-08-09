@@ -32,6 +32,8 @@ public class RangeInputButton implements OnOffButton {
 
     private float threshold;
 
+    private DebouncedButton debounced;
+
     public RangeInputButton(RangeInput originalInput, float threshold) {
         this.input = originalInput;
         this.threshold = threshold;
@@ -44,5 +46,14 @@ public class RangeInputButton implements OnOffButton {
         }
 
         return false;
+    }
+
+    @Override
+    public DebouncedButton debounced() {
+        if (debounced == null) {
+            debounced = new DebouncedButton(this);
+        }
+
+        return debounced;
     }
 }
