@@ -26,5 +26,6 @@ package com.ftc9929.corelib.control;
  * Represents a digital (on/off) input on the gamepad
  */
 public interface OnOffButton {
-    public boolean isPressed();
+    boolean isPressed();
+    
 }
