@@ -23,6 +23,7 @@
 package com.ftc9929.corelib.state;
 
 import com.ftc9929.corelib.control.DebouncedButton;
+import com.ftc9929.corelib.control.NinjaGamePad;
 import com.ftc9929.testing.fakes.control.FakeOnOffButton;
 
 import org.firstinspires.ftc.robotcore.external.Func;
@@ -141,7 +142,7 @@ public class StateMachineTest {
         }
 
         @Override
-        public void liveConfigure(DebouncedGamepadButtons buttons) {
+        public void liveConfigure(NinjaGamePad gamePad) {
             configuredCallCount++;
 
             //if (buttons.getaButton().getRise()) {
