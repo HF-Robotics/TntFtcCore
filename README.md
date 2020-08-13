@@ -36,7 +36,8 @@ Next, add a dependencies section in build.gradle in the TeamCode directory, repl
 
 ```Groovy
 dependencies {
-    // Add this line to use the core class library 'com.ftc9929.TntFtcCore:metrics:[version]'
+    // Add this line to use the core class library
+    implementation 'com.ftc9929.TntFtcCore:corelib:[version]'
 
     // Add this line to use fake hardware implementations used for unit testing
     testImplementation 'com.ftc9929.TntFtcCore:fakeHardware:[version]'
