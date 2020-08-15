@@ -51,7 +51,7 @@ public class ParametricScaledRangeInput implements RangeInput {
         checkArgument(throttleExponent >= 0,
                 "Throttle exponent must be a non-negative value");
         checkArgument(throttleExponent % 2 != 0,
-                "Throttle exponent must be a odd number");
+                "Throttle exponent must be an odd number");
 
         this.rawInput = rawInput;
         this.throttleDeadband = throttleDeadband;
