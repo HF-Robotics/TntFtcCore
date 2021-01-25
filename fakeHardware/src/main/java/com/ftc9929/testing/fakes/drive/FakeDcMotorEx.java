@@ -207,6 +207,11 @@ public class FakeDcMotorEx implements DcMotorEx {
         return currentEncoderPosition;
     }
 
+    public void setCurrentPosition(int currentMotorPosition) {
+        this.currentEncoderPosition = currentMotorPosition;
+    }
+
+    @Deprecated
     public void setCurrentPosistion(int currentMotorPosistion) {
         this.currentEncoderPosition = currentMotorPosistion;
     }
