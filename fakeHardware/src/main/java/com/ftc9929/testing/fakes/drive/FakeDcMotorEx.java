@@ -48,6 +48,8 @@ public class FakeDcMotorEx implements DcMotorEx {
 
     private int targetPositionTolerance;
 
+    private double simpleVelocity;
+
     public FakeDcMotorEx() {
 
     }
@@ -69,17 +71,17 @@ public class FakeDcMotorEx implements DcMotorEx {
 
     @Override
     public void setVelocity(double angularRate) {
-
+        simpleVelocity = angularRate;
     }
 
     @Override
     public void setVelocity(double angularRate, AngleUnit unit) {
-
+        throw new IllegalArgumentException("Not implemented");
     }
 
     @Override
     public double getVelocity(AngleUnit unit) {
-        return 0;
+        throw new IllegalArgumentException("Not implemented");
     }
 
     @Override
@@ -179,7 +181,7 @@ public class FakeDcMotorEx implements DcMotorEx {
 
     @Override
     public double getVelocity(){
-        return 0;
+        return simpleVelocity;
     }
 
     @Override
