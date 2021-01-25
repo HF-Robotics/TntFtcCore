@@ -38,7 +38,7 @@ public class FakeHardwareMapTest {
     @Test
     public void testLoadingExistingHardwareMap() throws Exception {
 
-       HardwareMap fakeHwMap = FakeHardwareMapFactory.getFakeHardwareMap(pathToSampleHardwareMap());
+       HardwareMap fakeHwMap = FakeHardwareMapFactory.getFakeHardwareMap("sample_hardware_map.xml");
         List<DcMotorEx> motors = fakeHwMap.getAll(DcMotorEx.class);
         assertDevicesPresent(fakeHwMap, DcMotorEx.class, 1);
         assertDevicesPresent(fakeHwMap, TouchSensor.class, 1);
@@ -55,11 +55,5 @@ public class FakeHardwareMapTest {
                         return String.format("Expected a list of %d %s", count, deviceClass);
                     }
                 });
-    }
-
-    private String pathToSampleHardwareMap() {
-        File asFile = new File("src/test/resources/SampleHardwareMap.xml");
-
-        return asFile.getAbsolutePath();
     }
 }
