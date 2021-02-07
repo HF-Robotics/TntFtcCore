@@ -27,6 +27,7 @@ import com.ftc9929.testing.fakes.drive.FakeRevBlinkinLedDriver;
 import com.ftc9929.testing.fakes.drive.FakeServo;
 import com.ftc9929.testing.fakes.sensors.FakeDigitalChannel;
 import com.ftc9929.testing.fakes.sensors.FakeDistanceSensor;
+import com.ftc9929.testing.fakes.sensors.FakeRevTouchSensor;
 import com.ftc9929.testing.fakes.sensors.FakeTouchSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -149,7 +150,7 @@ public class FakeHardwareMapFactory {
             addDevices(digitalChannels, new DeviceFromXml() {
                 @Override
                 public void addDeviceToHardwareMap(String name, int portNumber) {
-                    hardwareMap.put(name, new FakeTouchSensor());
+                    hardwareMap.put(name, new FakeRevTouchSensor(portNumber));
                 }
             });
         }

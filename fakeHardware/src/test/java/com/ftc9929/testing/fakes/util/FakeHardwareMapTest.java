@@ -22,15 +22,14 @@
 
 package com.ftc9929.testing.fakes.util;
 
+import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
-import java.io.File;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -41,8 +40,8 @@ public class FakeHardwareMapTest {
        HardwareMap fakeHwMap = FakeHardwareMapFactory.getFakeHardwareMap("sample_hardware_map.xml");
         List<DcMotorEx> motors = fakeHwMap.getAll(DcMotorEx.class);
         assertDevicesPresent(fakeHwMap, DcMotorEx.class, 1);
-        assertDevicesPresent(fakeHwMap, TouchSensor.class, 1);
-        assertDevicesPresent(fakeHwMap, DigitalChannel.class, 2); // because our fake TS is a DC
+        assertDevicesPresent(fakeHwMap, RevTouchSensor.class, 1);
+        assertDevicesPresent(fakeHwMap, DigitalChannel.class, 1); // because our fake TS is a DC
     }
 
     private void assertDevicesPresent(final HardwareMap fakeHwMap,
