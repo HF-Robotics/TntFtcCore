@@ -187,7 +187,7 @@
 
             <RevColorSensorV3 name="[...]" port="0" bus="1" />
 
-            <RevBlinkinLedDriver name="[...]" port="0" bus="2" />
+            <RevBlinkinLedDriver name="fakeBlinkinled" port="4" />
         </LynxModule>
 
         <LynxModule name="Secondary Hub" port="3">

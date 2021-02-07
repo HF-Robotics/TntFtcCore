@@ -23,6 +23,7 @@
 package com.ftc9929.testing.fakes.util;
 
 import com.ftc9929.testing.fakes.drive.FakeDcMotorEx;
+import com.ftc9929.testing.fakes.drive.FakeRevBlinkinLedDriver;
 import com.ftc9929.testing.fakes.drive.FakeServo;
 import com.ftc9929.testing.fakes.sensors.FakeDigitalChannel;
 import com.ftc9929.testing.fakes.sensors.FakeDistanceSensor;
@@ -57,6 +58,7 @@ public class FakeHardwareMapFactory {
     public static final String REV_DISTANCE_SENSOR_TAG_NAME = "REV_VL53L0X_RANGE_SENSOR";
     public static final String DIGITAL_DEVICE_TAG_NAME = "DigitalDevice";
     public static final String REV_TOUCH_SENSOR_TAG_NAME = "RevTouchSensor";
+    public static final String REV_BLINKINLED_DRIVER_TAG_NAME = "RevBlinkinLedDriver";
 
     /**
      * Loads the hardware map with the name &quot;hardwareMapName&quot; from the location used by
@@ -111,6 +113,7 @@ public class FakeHardwareMapFactory {
 
             addAllDigitalChannels(doc);
             addAllRevTouchSensors(doc);
+            addAllRevBlinkinledDrivers(doc);
 
             addAllDistanceSensors(doc);
 
@@ -147,6 +150,17 @@ public class FakeHardwareMapFactory {
                 @Override
                 public void addDeviceToHardwareMap(String name, int portNumber) {
                     hardwareMap.put(name, new FakeTouchSensor());
+                }
+            });
+        }
+
+        private void addAllRevBlinkinledDrivers(Document doc) {
+            NodeList blinkinLeds = doc.getElementsByTagName(REV_BLINKINLED_DRIVER_TAG_NAME);
+
+            addDevices(blinkinLeds, new DeviceFromXml() {
+                @Override
+                public void addDeviceToHardwareMap(String name, int portNumber) {
+                    hardwareMap.put(name, new FakeRevBlinkinLedDriver(portNumber));
                 }
             });
         }
