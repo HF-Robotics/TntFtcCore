@@ -72,6 +72,8 @@ public class StopwatchDelayState extends State {
         long elapsedMs = stopwatch.elapsed(TimeUnit.MILLISECONDS);
 
         if (elapsedMs > thresholdTimeMs) {
+            stopwatch.reset(); // make it possible to reuse this state in cyclic state machines
+
             return nextState;
         }
 
