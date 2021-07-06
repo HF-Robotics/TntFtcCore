@@ -28,7 +28,6 @@ import com.ftc9929.testing.fakes.drive.FakeServo;
 import com.ftc9929.testing.fakes.sensors.FakeDigitalChannel;
 import com.ftc9929.testing.fakes.sensors.FakeDistanceSensor;
 import com.ftc9929.testing.fakes.sensors.FakeRevTouchSensor;
-import com.ftc9929.testing.fakes.sensors.FakeTouchSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.w3c.dom.Document;
@@ -123,12 +122,16 @@ public class FakeHardwareMapFactory {
         }
 
         private void addAllDistanceSensors(Document doc) {
-            NodeList digitalChannels = doc.getElementsByTagName(REV_DISTANCE_SENSOR_TAG_NAME);
+            NodeList distanceSensors = doc.getElementsByTagName(REV_DISTANCE_SENSOR_TAG_NAME);
 
-            addDevices(digitalChannels, new DeviceFromXml() {
+            addDevices(distanceSensors, new DeviceFromXml() {
                 @Override
                 public void addDeviceToHardwareMap(String name, int portNumber) {
-                    hardwareMap.put(name, new FakeDistanceSensor());
+                    final FakeDistanceSensor fakeDistanceSensor = new FakeDistanceSensor();
+
+                    hardwareMap.put(name, fakeDistanceSensor);
+
+                    // No DeviceMapping for the Rev2mDistanceSensor
                 }
             });
         }
@@ -139,18 +142,26 @@ public class FakeHardwareMapFactory {
             addDevices(digitalChannels, new DeviceFromXml() {
                 @Override
                 public void addDeviceToHardwareMap(String name, int portNumber) {
-                    hardwareMap.put(name, new FakeDigitalChannel());
+                    final FakeDigitalChannel fakeDigitalChannel = new FakeDigitalChannel();
+
+                    hardwareMap.put(name, fakeDigitalChannel);
+
+                    hardwareMap.digitalChannel.put(name, fakeDigitalChannel);
                 }
             });
         }
 
         private void addAllRevTouchSensors(Document doc) {
-            NodeList digitalChannels = doc.getElementsByTagName(REV_TOUCH_SENSOR_TAG_NAME);
+            NodeList revTouchSensors = doc.getElementsByTagName(REV_TOUCH_SENSOR_TAG_NAME);
 
-            addDevices(digitalChannels, new DeviceFromXml() {
+            addDevices(revTouchSensors, new DeviceFromXml() {
                 @Override
                 public void addDeviceToHardwareMap(String name, int portNumber) {
-                    hardwareMap.put(name, new FakeRevTouchSensor(portNumber));
+                    final FakeRevTouchSensor fakeRevTouchSensor = new FakeRevTouchSensor(portNumber);
+
+                    hardwareMap.put(name, fakeRevTouchSensor);
+
+                    hardwareMap.touchSensor.put(name, fakeRevTouchSensor);
                 }
             });
         }
@@ -186,7 +197,11 @@ public class FakeHardwareMapFactory {
             addDevices(dcMotors, new DeviceFromXml() {
                 @Override
                 public void addDeviceToHardwareMap(String name, int portNumber) {
-                    hardwareMap.put(name, new FakeDcMotorEx());
+                    final FakeDcMotorEx fakeDcMotorEx = new FakeDcMotorEx();
+
+                    hardwareMap.put(name, fakeDcMotorEx);
+
+                    hardwareMap.dcMotor.put(name, fakeDcMotorEx);
                 }
             });
         }
@@ -198,7 +213,11 @@ public class FakeHardwareMapFactory {
             addDevices(servos, new DeviceFromXml() {
                 @Override
                 public void addDeviceToHardwareMap(String name, int portNumber) {
-                    hardwareMap.put(name, new FakeServo());
+                    final FakeServo fakeServo = new FakeServo();
+
+                    hardwareMap.put(name, fakeServo);
+
+                    hardwareMap.servo.put(name, fakeServo);
                 }
             });
         }
@@ -210,6 +229,10 @@ public class FakeHardwareMapFactory {
 
                 Node nameNode = attributesByName.getNamedItem("name");
                 String nameValue = nameNode.getNodeValue();
+
+                if (nameValue != null) {
+                    nameValue = nameValue.trim();
+                }
 
                 if (deviceNames.contains(nameValue)) {
                     // This isn't exactly real hardware map behavior, but it prevents
