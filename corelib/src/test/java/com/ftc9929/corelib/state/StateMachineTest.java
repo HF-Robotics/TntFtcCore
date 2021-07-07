@@ -274,6 +274,11 @@ public class StateMachineTest {
         }
 
         @Override
+        public void setDisplayFormat(DisplayFormat displayFormat) {
+            
+        }
+
+        @Override
         public Log log() {
             return null;
         }
