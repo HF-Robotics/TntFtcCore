@@ -28,6 +28,7 @@ import com.ftc9929.testing.fakes.drive.FakeServo;
 import com.ftc9929.testing.fakes.sensors.FakeDigitalChannel;
 import com.ftc9929.testing.fakes.sensors.FakeDistanceSensor;
 import com.ftc9929.testing.fakes.sensors.FakeRevTouchSensor;
+import com.ftc9929.testing.fakes.sensors.FakeVoltageSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.w3c.dom.Document;
@@ -119,6 +120,8 @@ public class FakeHardwareMapFactory {
 
             // FIXME: Add implementations for things we don't support, but need:
             // IMU, LynxColorSensor, RevColorSensorV3, AnalogInput
+
+            hardwareMap.voltageSensor.put("Voltage Sensor", new FakeVoltageSensor());
         }
 
         private void addAllDistanceSensors(Document doc) {

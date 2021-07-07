@@ -42,6 +42,8 @@ public class FakeHardwareMapTest {
         assertDevicesPresent(fakeHwMap, DcMotorEx.class, 1);
         assertDevicesPresent(fakeHwMap, RevTouchSensor.class, 1);
         assertDevicesPresent(fakeHwMap, DigitalChannel.class, 1); // because our fake TS is a DC
+
+        Assertions.assertEquals(1, fakeHwMap.voltageSensor.size());
     }
 
     private void assertDevicesPresent(final HardwareMap fakeHwMap,
