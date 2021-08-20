@@ -52,9 +52,4 @@ public class RunnableState extends State {
     public void resetToStart() {
 
     }
-
-    @Override
-    public void liveConfigure(NinjaGamePad configureGamePad) {
-
-    }
 }

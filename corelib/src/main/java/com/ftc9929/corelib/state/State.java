@@ -59,17 +59,7 @@ public abstract class State {
 
     public abstract void resetToStart();
 
-    public abstract void liveConfigure(NinjaGamePad gamePad);
-
     public String getName() {
         return name;
-    }
-
-    protected void debugMsg(String message) {
-        if (telemetry != null) {
-            telemetry.addData("01-State", message);
-        }
-
-        Log.d(LOG_TAG, message);
     }
 }

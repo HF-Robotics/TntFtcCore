@@ -52,11 +52,6 @@ public abstract class ToggleState extends State {
     }
 
     @Override
-    public void liveConfigure(NinjaGamePad configureGamePad) {
-
-    }
-
-    @Override
     public State doStuffAndGetNextState() {
         if (button.getRise()) {
             toggled = !toggled;

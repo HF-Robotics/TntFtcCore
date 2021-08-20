@@ -23,6 +23,8 @@
 package com.ftc9929.corelib.state;
 
 
+import com.ftc9929.testing.fakes.FakeTelemetry;
+
 import org.junit.Assert;
 import org.junit.function.ThrowingRunnable;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,17 +34,19 @@ public class RunnableStateTest {
 
     StateMachine stateMachine;
     boolean[] flag = new boolean[] { false };
+    private FakeTelemetry telemetry;
 
     @BeforeEach
     protected void setUp() throws Exception {
-        stateMachine = new StateMachine(null);
+        telemetry = new FakeTelemetry();
+        stateMachine = new StateMachine(telemetry);
     }
 
     @Test
     public void testNormalOperation() {
         Assert.assertFalse(flag[0]);
 
-        RunnableState runnableState = new RunnableState("test", null,
+        RunnableState runnableState = new RunnableState("test", telemetry,
                 new Runnable() {
                     @Override
                     public void run() {
@@ -67,7 +71,7 @@ public class RunnableStateTest {
         Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
-                new RunnableState(null, null, doNothing);
+                new RunnableState(null, telemetry, doNothing);
             }
         });
     }

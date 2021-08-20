@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020 The Tech Ninja Team (https://ftc9929.com)
+ Copyright (c) 2021 The Tech Ninja Team (https://ftc9929.com)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -24,85 +24,73 @@ package com.ftc9929.corelib.state;
 
 import android.util.Log;
 
-import com.ftc9929.corelib.control.DebouncedButton;
-import com.ftc9929.corelib.control.NinjaGamePad;
 import com.google.common.base.Ticker;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
 import lombok.NonNull;
-import lombok.Setter;
 
 import static com.ftc9929.corelib.Constants.LOG_TAG;
 
 @SuppressWarnings("unused")
 public class StateMachine {
-
-    private Stack<State> executedStates;
-
-    private Set<State> allStates;
-
     private State currentState = null;
+
+    private boolean stateMachineRunning = false;
 
     private State firstState;
 
     private State lastSequentialState;
 
-    private boolean areWeDebugging = false;
-
-    private boolean isStateMachinePaused = false;
-
-    @Setter
-    private DebouncedButton goButton;
-
-    @Setter
-    private DebouncedButton goBackButton;
-
-    @Setter
-    private DebouncedButton doOverButton;
-
-    private NinjaGamePad configureGamePad;
-
     private Telemetry telemetry;
 
-    public void addNewState(State newState) {
-        Log.d(LOG_TAG, String.format("addNewState(%s)", stateClassAndName(newState)));
-        allStates.add(newState);
-    }
-
-    public void startDebugging() {
-        areWeDebugging = true;
-    }
-
-    public void stopDebugging() {
-        areWeDebugging = false;
-    }
-
-    public void setConfigureGamepad(NinjaGamePad configureGamePad) {
-        this.configureGamePad = configureGamePad;
-    }
-
     public String getCurrentStateName() {
+        // This is a little bit of a hack, as the API to this is changing
+        // until doOneStateLoop() has run, currentState will be null,
+        // this change in behavior breaks callers, so honor the old contract, it's mostly
+        // for testing, anyway
+        if (!stateMachineRunning) {
+            return firstState.getName();
+        }
+
         return currentState.getName();
     }
 
-    public StateMachine(Telemetry telemetry) {
+    public StateMachine(@NonNull Telemetry telemetry) {
         this.telemetry = telemetry;
-        executedStates = new Stack<>();
-        allStates = new HashSet<>();
+    }
+
+    /**
+     * Sets up the first state executed by the state machine to be the first state of the
+     * given sequence.
+     * @param sequenceOfStates
+     *
+     * @throws IllegalArgumentException if the state machine is already running, or the first state
+     * has already been set.
+     */
+    public void addSequence(@NonNull SequenceOfStates sequenceOfStates) {
+        checkStateMachineNotRunning();
+        checkFirstStateNotSet();
+
+        final State sequenceFirstState = sequenceOfStates.getFirstState();
+
+        Log.d(LOG_TAG, String.format("addSequential() - no current first state, setting first state to %s", stateClassAndName(sequenceFirstState)));
+
+        setFirstState(sequenceFirstState);
     }
 
     /**
      * Adds the "next" state in a sequential state machine setting up the
      * transition to next state automatically. Also sets as first state if one
      * is not already defined.
+     *
+     * @deprecated Use SequentialStates and addSequence(), instead
      */
     public void addSequential(@NonNull State nextState) {
+        checkStateMachineNotRunning();
+
         Log.d(LOG_TAG, String.format("addSequential(%s)",
                 stateClassAndName(nextState)));
 
@@ -113,11 +101,9 @@ public class StateMachine {
             lastSequentialState.setNextState(nextState);
         }
 
-        if (currentState == null) {
+        if (firstState == null) {
             Log.d(LOG_TAG, "addSequential() - no current first state, setting first state");
             setFirstState(nextState);
-        } else {
-            addNewState(nextState);
         }
 
         lastSequentialState = nextState;
@@ -132,87 +118,58 @@ public class StateMachine {
      * @throws  IllegalStateException if this method has already been called
      */
     public void setFirstState(@NonNull State state) {
-        if (currentState != null) {
-            throw new IllegalArgumentException("State machine already has the first state set");
-        }
+        checkStateMachineNotRunning();
+
+        checkFirstStateNotSet();
 
         Log.d(LOG_TAG, String.format("setFirstState(%s)",
                 stateClassAndName(state)));
 
-        executedStates.push(state);
-        addNewState(state);
-        currentState = state;
         firstState = state;
     }
 
+    private void checkFirstStateNotSet() {
+        if (firstState != null) {
+            throw new IllegalArgumentException("State machine already has the first state set");
+        }
+    }
+
     public void addStartDelay(long numberOfSeconds, @NonNull Ticker ticker) {
-        State originalFirstState = executedStates.pop();
+        checkStateMachineNotRunning();
+
         StopwatchDelayState startDelay = new StopwatchDelayState("Delayed start",
                 telemetry, ticker, numberOfSeconds, TimeUnit.SECONDS);
-        executedStates.push(startDelay);
-        startDelay.setNextState(originalFirstState);
-        currentState = startDelay;
+        startDelay.setNextState(firstState);
+        firstState = startDelay;
     }
 
     public void doOneStateLoop() {
         try {
-            if (!isStateMachinePaused) {
-                if (currentState == null) {
-                    Log.w(LOG_TAG, "No state left to execute");
-                }
-
-                State possibleNextState = currentState.doStuffAndGetNextState();
-
-                if (possibleNextState == null) {
-                    //noinspection ConstantConditions
-                    currentState = possibleNextState;
-                } else if (!possibleNextState.equals(currentState)) {
-                    // We've changed states, Yay time to party
-                    Log.d(LOG_TAG, String.format("state %s -> %s",
-                            stateClassAndName(currentState),
-                            stateClassAndName(possibleNextState)));
-
-                    executedStates.push(possibleNextState);
-                    currentState = possibleNextState;
-
-                    if (areWeDebugging) {
-                        isStateMachinePaused = true;
-                    }
-                }
-            } else {
-                // we're paused, allowing live configuring and waiting for go or go back signals
-                currentState.liveConfigure(configureGamePad);
-
-                // check for un-pausing
-                if (goButton.getRise()) {
-                    isStateMachinePaused = false;
-                } else if (goBackButton.getRise()) {
-                    // we were paused - and haven't run the current step yet
-                    currentState = executedStates.pop();
-
-                    if (!executedStates.empty()) {
-                        currentState = executedStates.pop(); // this is the one we really want
-                    }
-
-                    currentState.resetToStart();
-                    isStateMachinePaused = true;
-                } else if (doOverButton.getRise()) {
-                    // reset all the states, set current to ??? and pause the state machine
-                    for (State resetThisState : allStates) {
-                        resetThisState.resetToStart();
-                    }
-
-                    executedStates.clear();
-
-                    executedStates.push(firstState);
+            if (currentState == null) {
+                if (!stateMachineRunning) {
                     currentState = firstState;
-                    isStateMachinePaused = true;
+                    stateMachineRunning = true;
+                } else {
+                    Log.w(LOG_TAG, "No state left to execute");
                 }
             }
 
+            State possibleNextState = currentState.doStuffAndGetNextState();
+
+            if (possibleNextState == null) {
+                //noinspection ConstantConditions
+                currentState = possibleNextState;
+            } else if (!possibleNextState.equals(currentState)) {
+                // We've changed states, Yay time to party
+                Log.d(LOG_TAG, String.format("state %s -> %s",
+                        stateClassAndName(currentState),
+                        stateClassAndName(possibleNextState)));
+
+                currentState = possibleNextState;
+            }
+
             if (telemetry != null) {
-                telemetry.addData("00", String.format("%s%s state %s", areWeDebugging ? "[DEBUG]" : "",
-                        isStateMachinePaused ? "||" : ">", currentState.getName()));
+                telemetry.addData("00", String.format("> state %s", currentState != null ? currentState.getName() : "null"));
             }
         } catch (Throwable t) {
             // Better logging than the FTC SDK provides :(
@@ -229,7 +186,13 @@ public class StateMachine {
         }
     }
 
-    private static String stateClassAndName(@NonNull State state) {
+    private void checkStateMachineNotRunning() {
+        if (stateMachineRunning) {
+            throw new IllegalArgumentException("State machine already running, cannot change configuration");
+        }
+    }
+
+    static String stateClassAndName(@NonNull State state) {
         return String.format("%s - '%s'", state.getClass().getSimpleName(), state.getName());
     }
 }

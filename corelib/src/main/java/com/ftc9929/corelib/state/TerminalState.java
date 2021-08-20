@@ -57,10 +57,5 @@ public abstract class TerminalState extends State {
         hasRun = false;
     }
 
-    @Override
-    public void liveConfigure(NinjaGamePad gamePad) {
-
-    }
-
     protected abstract void runTerminalCode();
 }

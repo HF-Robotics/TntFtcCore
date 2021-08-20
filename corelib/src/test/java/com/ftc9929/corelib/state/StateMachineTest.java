@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020 The Tech Ninja Team (https://ftc9929.com)
+ Copyright (c) 2021 The Tech Ninja Team (https://ftc9929.com)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -22,39 +22,31 @@
 
 package com.ftc9929.corelib.state;
 
-import com.ftc9929.corelib.control.DebouncedButton;
-import com.ftc9929.corelib.control.NinjaGamePad;
-import com.ftc9929.testing.fakes.control.FakeOnOffButton;
+import com.ftc9929.testing.fakes.FakeTelemetry;
+import com.google.common.testing.FakeTicker;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class StateMachineTest {
-    FakeOnOffButton goButton;
-    FakeOnOffButton goBackButton;
-    FakeOnOffButton doOverButton;
 
     StateMachine stateMachine;
-    TestTelemetry testTelemetry;
+    FakeTelemetry testTelemetry;
 
     @BeforeEach
-    protected void setUp() throws Exception {
-        goButton = new FakeOnOffButton();
-        goBackButton = new FakeOnOffButton();
-        doOverButton = new FakeOnOffButton();
-        testTelemetry = new TestTelemetry();
-
+    protected void setUp() {
+        testTelemetry = new FakeTelemetry();
         stateMachine = new StateMachine(testTelemetry);
-        stateMachine.setGoBackButton(new DebouncedButton(goBackButton));
-        stateMachine.setGoButton(new DebouncedButton(goButton));
-        stateMachine.setDoOverButton(new DebouncedButton(doOverButton));
     }
 
     @Test
@@ -66,57 +58,109 @@ public class StateMachineTest {
         state2.setNextState(state3);
 
         stateMachine.setFirstState(startState);
-        stateMachine.addNewState(state2);
-        stateMachine.addNewState(state3);
 
         assertEquals("start", stateMachine.getCurrentStateName());
 
         stateMachine.doOneStateLoop();
-        assertEquals("> state state2", testTelemetry.telemetryData.get("00"));
+        testTelemetry.update();
+        assertEquals("00 : > state state2\n", testTelemetry.getCurrentTelemetryData());
         assertEquals("state2", stateMachine.getCurrentStateName());
 
         stateMachine.doOneStateLoop();
-        assertEquals("> state state3", testTelemetry.telemetryData.get("00"));
+        testTelemetry.update();
+        assertEquals("00 : > state state3\n", testTelemetry.getCurrentTelemetryData());
         assertEquals("state3", stateMachine.getCurrentStateName());
     }
 
-    public void testDebugging() throws Exception {
+    @Test
+    public void testDelayState() {
+        FakeTicker fakeTicker = new FakeTicker();
 
-        TestState throwAwayState = new TestState("Throw away", testTelemetry);
+        TestState startState = new TestState("start", null);
+        TestState state2 = new TestState("state2", null);
 
-        TestState stateA = new TestState("State A", testTelemetry);
-        throwAwayState.setNextState(stateA);
+        stateMachine.addSequential(startState);
+        stateMachine.addSequential(state2);
+        stateMachine.addStartDelay(2, fakeTicker);
 
-        TestState stateB = new TestState("State B", testTelemetry);
-        stateA.setNextState(stateB);
+        // Starting delayed
+        assertEquals("Delayed start", stateMachine.getCurrentStateName());
+        stateMachine.doOneStateLoop();
+        fakeTicker.advance(500, TimeUnit.MILLISECONDS);
+        stateMachine.doOneStateLoop();
+        assertEquals("Delayed start", stateMachine.getCurrentStateName());
+        fakeTicker.advance(1700, TimeUnit.MILLISECONDS);
 
-        stateMachine.setFirstState(throwAwayState);
-        stateMachine.addNewState(stateA);
-        stateMachine.addNewState(stateB);
+        // Delay has expired, test normal operation
+        stateMachine.doOneStateLoop();
+        assertEquals("start", stateMachine.getCurrentStateName());
 
-        stateMachine.startDebugging();
-        stateMachine.doOneStateLoop(); // should go from throw-away to stateA
-        assertEquals("[DEBUG]|| state State A",testTelemetry.telemetryData.get("00"));
+        stateMachine.doOneStateLoop();
+        assertEquals("state2", stateMachine.getCurrentStateName());
+    }
 
-        assertEquals(1, throwAwayState.executionCount);
-        assertEquals(0, stateA.executionCount);
+    @Test
+    public void immutableOnceStarted() {
+        stateMachine.setFirstState(new TestState("abcdef", null));
+        stateMachine.doOneStateLoop();
 
-        for (int i = 0; i < 10; i++) {
-            stateMachine.doOneStateLoop(); // we should actually be configurable
-            assertEquals(0, stateA.executionCount);
-            assertEquals(i + 1, stateA.configuredCallCount);
-        }
+        final TestState testState2 = new TestState("hijklmnop", null);
+        assertThrows(IllegalArgumentException.class, new Executable() {
+            @Override
+            public void execute() {
+                stateMachine.setFirstState(testState2);
+            }
+        });
 
-        goButton.setPressed(true);
-        stateMachine.doOneStateLoop(); // catch the "go" button being pressed
-        goButton.setPressed(false);
-        stateMachine.doOneStateLoop(); // we should run state "a" and pause at state "b"
-        assertEquals("[DEBUG]|| state State B", testTelemetry.telemetryData.get("00"));
+        assertThrows(IllegalArgumentException.class, new Executable() {
+            @Override
+            public void execute() {
+                stateMachine.addStartDelay(1, new FakeTicker());
+            }
+        });
 
-        goBackButton.setPressed(true);
-        stateMachine.doOneStateLoop(); // catch the "go back" button being pressed
-        goBackButton.setPressed(false);
-        assertEquals("[DEBUG]|| state State A", testTelemetry.telemetryData.get("00"));
+        assertThrows(IllegalArgumentException.class, new Executable() {
+            @Override
+            public void execute() {
+                stateMachine.addStartDelay(1, new FakeTicker());
+            }
+        });
+
+        assertThrows(IllegalArgumentException.class, new Executable() {
+            @Override
+            public void execute() {
+                stateMachine.addSequential(testState2);
+            }
+        });
+    }
+
+    @Test
+    public void testDelayStateWithNewSequences() {
+        FakeTicker fakeTicker = new FakeTicker();
+
+        TestState startState = new TestState("start", null);
+        TestState state2 = new TestState("state2", null);
+        SequenceOfStates sequenceOfStates = new SequenceOfStates();
+
+        sequenceOfStates.addSequential(startState);
+        sequenceOfStates.addSequential(state2);
+        stateMachine.addSequence(sequenceOfStates);
+        stateMachine.addStartDelay(2, fakeTicker);
+
+        // Starting delayed
+        assertEquals("Delayed start", stateMachine.getCurrentStateName());
+        stateMachine.doOneStateLoop();
+        fakeTicker.advance(500, TimeUnit.MILLISECONDS);
+        stateMachine.doOneStateLoop();
+        assertEquals("Delayed start", stateMachine.getCurrentStateName());
+        fakeTicker.advance(1700, TimeUnit.MILLISECONDS);
+
+        // Delay has expired, test normal operation
+        stateMachine.doOneStateLoop();
+        assertEquals("start", stateMachine.getCurrentStateName());
+
+        stateMachine.doOneStateLoop();
+        assertEquals("state2", stateMachine.getCurrentStateName());
     }
 
     class TestState extends State {
@@ -139,148 +183,6 @@ public class StateMachineTest {
         @Override
         public void resetToStart() {
             executionCount = 0;
-        }
-
-        @Override
-        public void liveConfigure(NinjaGamePad gamePad) {
-            configuredCallCount++;
-
-            //if (buttons.getaButton().getRise()) {
-              //  configurableParameter++;
-            //}
-        }
-    }
-
-    class TestTelemetry implements Telemetry {
-        Map<String, String> telemetryData = new HashMap<>();
-
-        @Override
-        public Item addData(String caption, String format, Object... args) {
-            telemetryData.put(caption, String.format(format, args));
-
-            return null;
-        }
-
-        @Override
-        public Item addData(String caption, Object value) {
-            telemetryData.put(caption, value.toString());
-
-            return null;
-        }
-
-        @Override
-        public <T> Item addData(String caption, Func<T> valueProducer) {
-            return null;
-        }
-
-        @Override
-        public <T> Item addData(String caption, String format, Func<T> valueProducer) {
-            return null;
-        }
-
-        @Override
-        public boolean removeItem(Item item) {
-            return false;
-        }
-
-        @Override
-        public void clear() {
-
-        }
-
-        @Override
-        public void clearAll() {
-
-        }
-
-        @Override
-        public Object addAction(Runnable action) {
-            return null;
-        }
-
-        @Override
-        public boolean removeAction(Object token) {
-            return false;
-        }
-
-        @Override
-        public void speak(String text) {
-
-        }
-
-        @Override
-        public void speak(String text, String languageCode, String countryCode) {
-
-        }
-
-        @Override
-        public boolean update() {
-            return false;
-        }
-
-        @Override
-        public Line addLine() {
-            return null;
-        }
-
-        @Override
-        public Line addLine(String lineCaption) {
-            return null;
-        }
-
-        @Override
-        public boolean removeLine(Line line) {
-            return false;
-        }
-
-        @Override
-        public boolean isAutoClear() {
-            return false;
-        }
-
-        @Override
-        public void setAutoClear(boolean autoClear) {
-
-        }
-
-        @Override
-        public int getMsTransmissionInterval() {
-            return 0;
-        }
-
-        @Override
-        public void setMsTransmissionInterval(int msTransmissionInterval) {
-
-        }
-
-        @Override
-        public String getItemSeparator() {
-            return null;
-        }
-
-        @Override
-        public void setItemSeparator(String itemSeparator) {
-
-        }
-
-        @Override
-        public String getCaptionValueSeparator() {
-            return null;
-        }
-
-        @Override
-        public void setCaptionValueSeparator(String captionValueSeparator) {
-
-        }
-
-        @Override
-        public void setDisplayFormat(DisplayFormat displayFormat) {
-            
-        }
-
-        @Override
-        public Log log() {
-            return null;
         }
     }
 }

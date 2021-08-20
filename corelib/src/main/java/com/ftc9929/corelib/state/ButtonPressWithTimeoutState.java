@@ -70,9 +70,4 @@ public class ButtonPressWithTimeoutState extends StopwatchTimeoutSafetyState {
 
         return this;
     }
-
-    @Override
-    public void liveConfigure(NinjaGamePad configureGamePad) {
-        // do nothing
-    }
 }

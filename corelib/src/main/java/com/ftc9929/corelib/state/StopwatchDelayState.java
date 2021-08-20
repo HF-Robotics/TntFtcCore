@@ -57,11 +57,6 @@ public class StopwatchDelayState extends State {
     }
 
     @Override
-    public void liveConfigure(NinjaGamePad configureGamePad) {
-
-    }
-
-    @Override
     public State doStuffAndGetNextState() {
         if (!stopwatch.isRunning()) {
             stopwatch.start();

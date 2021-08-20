@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020 The Tech Ninja Team (https://ftc9929.com)
+ Copyright (c) 2021 The Tech Ninja Team (https://ftc9929.com)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -22,42 +22,34 @@
 
 package com.ftc9929.corelib.state;
 
-import com.ftc9929.corelib.control.NinjaGamePad;
-import com.qualcomm.robotcore.hardware.Servo;
+import android.util.Log;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
+import lombok.Getter;
 import lombok.NonNull;
 
+import static com.ftc9929.corelib.Constants.LOG_TAG;
+import static com.ftc9929.corelib.state.StateMachine.stateClassAndName;
+
 /**
- * A simple State implementation that puts the given servo in the given position and
- * then transitions to the next State.
+ * A list of states to be executed in order by the StateMachine class. Automatically
+ * sets up the linkages between states in a sequence.
  */
-public class ServoPositionState extends State {
-    Servo servo;
-    private double servoPosition;
+public class SequenceOfStates {
+    @Getter
+    private State firstState;
 
-    public ServoPositionState(
-            @NonNull final String name,
-            final Telemetry telemetry,
-            @NonNull Servo servo, double servoPosition ) {
-        super(name, telemetry);
-        this.servo = servo;
-        this.servoPosition = servoPosition;
-    }
+    @Getter
+    private State lastState;
 
-    @Override
-    public State doStuffAndGetNextState() {
-        if (servo != null) {
-            servo.setPosition(servoPosition);
+    public void addSequential(@NonNull State state) {
+        Log.d(LOG_TAG, String.format("addSequential(%s)", stateClassAndName(state)));
+
+        if (firstState == null) {
+            firstState = state;
+        } else {
+            lastState.setNextState(state);
         }
 
-        return nextState;
-    }
-
-    @Override
-    public void resetToStart() {
-        // TODO: If we wanted to do this, how could we reset the servo to the position
-        // it was in before the state started?
+        lastState = state;
     }
 }
