@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020 The Tech Ninja Team (https://ftc9929.com)
+ Copyright (c) 2021 The Tech Ninja Team (https://ftc9929.com)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -30,24 +30,16 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
-;
-
 @EqualsAndHashCode
 public class MotorVelocityMetricSource implements GaugeMetricSource {
     private final DcMotorEx motor;
 
     private final String sampleName;
 
-    private int lastEncoderValue;
-
-    private long lastValueTimestamp;
-
     public MotorVelocityMetricSource(@NonNull final NamedDeviceMap.NamedDevice<DcMotorEx> namedMotor) {
         this.motor = namedMotor.getDevice();
 
         sampleName = String.format("dcm_vel_%s", namedMotor.getName());
-        lastEncoderValue = motor.getCurrentPosition();
-        lastValueTimestamp = System.currentTimeMillis();
     }
 
     @Override
@@ -57,18 +49,6 @@ public class MotorVelocityMetricSource implements GaugeMetricSource {
 
     @Override
     public double getValue() {
-        int newEncoderValue = motor.getCurrentPosition();
-        double deltaEncoderPosition = newEncoderValue - lastEncoderValue;
-        lastEncoderValue = newEncoderValue;
-
-        long now = System.currentTimeMillis();
-        double deltaTimeMillis = now - lastValueTimestamp;
-        lastValueTimestamp = now;
-
-        if (deltaTimeMillis == 0) {
-            return MetricsSampler.NO_REPORT_VALUE;
-        }
-
-        return (deltaEncoderPosition / deltaTimeMillis) * 1000;
+       return motor.getVelocity();
     }
 }
