@@ -211,7 +211,7 @@ public class FakeDcMotorEx implements DcMotorEx {
     }
 
     public void setBusy(final boolean isBusy) {
-        isBusy = isBusy;
+        this.isBusy = isBusy;
     }
 
     @Override
