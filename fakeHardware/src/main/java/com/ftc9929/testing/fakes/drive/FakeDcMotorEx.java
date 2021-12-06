@@ -207,7 +207,11 @@ public class FakeDcMotorEx implements DcMotorEx {
 
     @Override
     public boolean isBusy() {
-        return false;
+        return isBusy;
+    }
+
+    public void setBusy(final boolean isBusy) {
+        isBusy = isBusy;
     }
 
     @Override
