@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020 The Tech Ninja Team (https://ftc9929.com)
+ Copyright (c) 2021 The Tech Ninja Team (https://ftc9929.com)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -49,6 +49,12 @@ public class FakeDcMotorEx implements DcMotorEx {
     private int targetPositionTolerance;
 
     private double simpleVelocity;
+    
+    private int targetPosition;
+
+    private boolean isBusy;
+
+    private RunMode runMode;
 
     public FakeDcMotorEx() {
 
@@ -191,17 +197,21 @@ public class FakeDcMotorEx implements DcMotorEx {
 
     @Override
     public void setTargetPosition(int position) {
-
+        targetPosition = position;
     }
 
     @Override
     public int getTargetPosition() {
-        return 0;
+        return targetPosition;
     }
 
     @Override
     public boolean isBusy() {
-        return false;
+        return isBusy;
+    }
+
+    public void setBusy(final boolean isBusy) {
+        this.isBusy = isBusy;
     }
 
     @Override
@@ -220,12 +230,14 @@ public class FakeDcMotorEx implements DcMotorEx {
 
     @Override
     public void setMode(RunMode mode) {
+        runMode = mode;
 
+        isBusy = mode == RunMode.RUN_TO_POSITION;
     }
 
     @Override
     public RunMode getMode() {
-        return null;
+        return runMode;
     }
 
     @Override
