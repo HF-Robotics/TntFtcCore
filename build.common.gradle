@@ -13,9 +13,9 @@ android {
 apply plugin: "de.mannodermaus.android-junit5"
 
 dependencies {
-    compileOnly 'org.firstinspires.ftc:RobotCore:6.2.1'
-    compileOnly 'org.firstinspires.ftc:Hardware:6.2.1'
-    compileOnly 'org.firstinspires.ftc:FtcCommon:6.2.1'
+    compileOnly 'org.firstinspires.ftc:RobotCore:7.0.0'
+    compileOnly 'org.firstinspires.ftc:Hardware:7.0.0'
+    compileOnly 'org.firstinspires.ftc:FtcCommon:7.0.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.6'
     annotationProcessor 'org.projectlombok:lombok:1.18.6'
