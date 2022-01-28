@@ -22,6 +22,7 @@
 
 package com.ftc9929.testing.fakes.util;
 
+import com.ftc9929.testing.fakes.drive.FakeCRServo;
 import com.ftc9929.testing.fakes.drive.FakeDcMotorEx;
 import com.ftc9929.testing.fakes.drive.FakeRevBlinkinLedDriver;
 import com.ftc9929.testing.fakes.drive.FakeServo;
@@ -60,6 +61,7 @@ public class FakeHardwareMapFactory {
     public static final String DIGITAL_DEVICE_TAG_NAME = "DigitalDevice";
     public static final String REV_TOUCH_SENSOR_TAG_NAME = "RevTouchSensor";
     public static final String REV_BLINKINLED_DRIVER_TAG_NAME = "RevBlinkinLedDriver";
+    public static final String CR_SERVO_TAG_NAME = "ContinuousRotationServo";
 
     /**
      * Loads the hardware map with the name &quot;hardwareMapName&quot; from the location used by
@@ -221,6 +223,19 @@ public class FakeHardwareMapFactory {
                     hardwareMap.put(name, fakeServo);
 
                     hardwareMap.servo.put(name, fakeServo);
+                }
+            });
+
+            NodeList crServos = doc.getElementsByTagName(CR_SERVO_TAG_NAME);
+
+            addDevices(crServos, new DeviceFromXml() {
+                @Override
+                public void addDeviceToHardwareMap(String name, int portNumber) {
+                    final FakeCRServo fakeCrServo = new FakeCRServo();
+
+                    hardwareMap.put(name, fakeCrServo);
+
+                    hardwareMap.crservo.put(name, fakeCrServo);
                 }
             });
         }

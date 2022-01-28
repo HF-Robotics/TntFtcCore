@@ -121,7 +121,7 @@
             ************************************************************* -->
 
             <Servo name="[...]" port="0" />
-            <ContinuousRotationServo name="[...]" port="1" />
+            <ContinuousRotationServo name="CRServo" port="1" />
 
             <!--
 
