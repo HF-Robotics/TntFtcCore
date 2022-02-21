@@ -25,14 +25,11 @@ package com.ftc9929.corelib.state;
 import com.ftc9929.testing.fakes.FakeTelemetry;
 import com.google.common.testing.FakeTicker;
 
-import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,11 +39,13 @@ public class StateMachineTest {
 
     StateMachine stateMachine;
     FakeTelemetry testTelemetry;
+    FakeTicker fakeTicker;
 
     @BeforeEach
     protected void setUp() {
         testTelemetry = new FakeTelemetry();
         stateMachine = new StateMachine(testTelemetry);
+        fakeTicker = new FakeTicker();
     }
 
     @Test
@@ -136,11 +135,9 @@ public class StateMachineTest {
 
     @Test
     public void testDelayStateWithNewSequences() {
-        FakeTicker fakeTicker = new FakeTicker();
-
         TestState startState = new TestState("start", null);
         TestState state2 = new TestState("state2", null);
-        SequenceOfStates sequenceOfStates = new SequenceOfStates();
+        SequenceOfStates sequenceOfStates = new SequenceOfStates(fakeTicker, testTelemetry);
 
         sequenceOfStates.addSequential(startState);
         sequenceOfStates.addSequential(state2);
@@ -161,6 +158,36 @@ public class StateMachineTest {
 
         stateMachine.doOneStateLoop();
         assertEquals("state2", stateMachine.getCurrentStateName());
+    }
+
+    @Test
+    public void repeatingSteps() {
+        SequenceOfStates steps = new SequenceOfStates(fakeTicker, testTelemetry);
+
+        final int[] counter = new int[1];
+        counter[0] = 0;
+
+        steps.addRepeatingStep("Test repeat step", (myself) -> {
+            counter[0]++;
+
+            if (counter[0] > 4) {
+                return false;
+            }
+
+            return true;
+        });
+
+        TestState testState = new TestState("test", testTelemetry);
+
+        steps.addSequential(testState);
+
+        stateMachine.addSequence(steps);
+
+        while (stateMachine.getCurrentStateName() != testState.getName()) {
+            stateMachine.doOneStateLoop();
+        }
+
+        assertEquals(5, counter[0]);
     }
 
     class TestState extends State {

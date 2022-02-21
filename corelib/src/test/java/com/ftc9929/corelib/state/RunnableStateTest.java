@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020 The Tech Ninja Team (https://ftc9929.com)
+ Copyright (c) 2022 The Tech Ninja Team (https://ftc9929.com)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,8 @@
 
 package com.ftc9929.corelib.state;
 
-
 import com.ftc9929.testing.fakes.FakeTelemetry;
+import com.google.common.testing.FakeTicker;
 
 import org.junit.Assert;
 import org.junit.function.ThrowingRunnable;
@@ -74,5 +74,17 @@ public class RunnableStateTest {
                 new RunnableState(null, telemetry, doNothing);
             }
         });
+    }
+
+    @Test
+    public void testWithSequence() {
+        Assert.assertFalse(flag[0]);
+        SequenceOfStates steps = new SequenceOfStates(new FakeTicker(), telemetry);
+        steps.addRunnableStep("test", () -> flag[0] = true);
+
+        stateMachine.addSequence(steps);
+        stateMachine.doOneStateLoop();
+
+        Assert.assertTrue(flag[0]);
     }
 }
