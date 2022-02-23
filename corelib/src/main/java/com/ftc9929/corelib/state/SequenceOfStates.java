@@ -45,14 +45,14 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class SequenceOfStates {
     @Getter
-    private State firstState;
+    protected State firstState;
 
     @Getter
-    private State lastState;
+    protected State lastState;
 
-    private final Ticker ticker;
+    protected final Ticker ticker;
 
-    private final Telemetry telemetry;
+    protected final Telemetry telemetry;
 
     public void addSequential(@NonNull State state) {
         Log.d(LOG_TAG, String.format("addSequential(%s)", stateClassAndName(state)));
