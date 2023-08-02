@@ -18,6 +18,7 @@ android {
 
 dependencies {
     testImplementation project(path: ':fakeHardware')
+    testImplementation project(path: ':corelib')
 }
 
 group = 'com.ftc9929'

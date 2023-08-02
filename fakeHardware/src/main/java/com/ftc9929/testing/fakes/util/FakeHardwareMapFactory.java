@@ -30,6 +30,9 @@ import com.ftc9929.testing.fakes.sensors.FakeDigitalChannel;
 import com.ftc9929.testing.fakes.sensors.FakeDistanceSensor;
 import com.ftc9929.testing.fakes.sensors.FakeRevTouchSensor;
 import com.ftc9929.testing.fakes.sensors.FakeVoltageSensor;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerNotifier;
+import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.w3c.dom.Document;
@@ -42,8 +45,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -101,7 +106,39 @@ public class FakeHardwareMapFactory {
     private static class HardwareMapCreator {
         private Set<String> deviceNames = new HashSet<>();
 
-        private HardwareMap hardwareMap = new HardwareMap(null);
+        private HardwareMap hardwareMap = new HardwareMap(null, new OpModeManagerNotifier() {
+            @Override
+            public OpMode registerListener(Notifications listener) {
+                return null;
+            }
+
+            @Override
+            public void unregisterListener(Notifications listener) {
+
+            }
+        }) {
+
+            @Nullable
+            @Override
+            public <T> T tryGet(Class<? extends T> classOrInterface, String deviceName) {
+                synchronized (lock) {
+                    deviceName = deviceName.trim();
+                    List<HardwareDevice> list = allDevicesMap.get(deviceName);
+                    @Nullable T result = null;
+
+                    if (list != null) {
+                        for (HardwareDevice device : list) {
+                            if (classOrInterface.isInstance(device)) {
+                                result = classOrInterface.cast(device);
+                                break;
+                            }
+                        }
+                    }
+
+                    return result;
+                }
+            }
+        };
 
         @SneakyThrows
         private void parseUsingDocBuilder(InputStream fileInput) {
@@ -218,7 +255,7 @@ public class FakeHardwareMapFactory {
             addDevices(servos, new DeviceFromXml() {
                 @Override
                 public void addDeviceToHardwareMap(String name, int portNumber) {
-                    final FakeServo fakeServo = new FakeServo();
+                    final FakeServo fakeServo = new FakeServo(portNumber);
 
                     hardwareMap.put(name, fakeServo);
 

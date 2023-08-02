@@ -22,6 +22,8 @@
 
 package com.ftc9929.metrics;
 
+import static com.ftc9929.corelib.Constants.LOG_TAG;
+
 import android.util.Log;
 
 import com.timgroup.statsd.NonBlockingStatsDClient;
@@ -30,8 +32,6 @@ import java.util.Set;
 
 import lombok.Builder;
 import lombok.NonNull;
-
-import static com.ftc9929.corelib.Constants.LOG_TAG;
 
 /**
  * A metrics reporter that sends collected metrics to a statsd implementation
@@ -104,7 +104,7 @@ public class StatsdMetricsReporter implements MetricsReporter {
             long endSamplingTimeMs = System.currentTimeMillis();
 
             statsDClient.gauge("metric_sample_time_ms",
-                    (endSamplingTimeMs - beginSamplingTimeMs), timestampTag);
+                    (endSamplingTimeMs - beginSamplingTimeMs), tags);
         } catch (Throwable t) {
             // metrics should do no harm
             Log.e(LOG_TAG, "Caught exception while sampling for metrics", t);

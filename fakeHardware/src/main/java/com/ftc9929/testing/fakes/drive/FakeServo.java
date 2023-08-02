@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020 The Tech Ninja Team (https://ftc9929.com)
+ Copyright (c) 2022 The Tech Ninja Team (https://ftc9929.com)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -22,17 +22,24 @@
 
 package com.ftc9929.testing.fakes.drive;
 
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
-import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.hardware.ServoImpl;
 
 @SuppressWarnings("unused")
-public class FakeServo implements Servo {
-    protected Direction direction        = Direction.FORWARD;
-    protected double          limitPositionMin = MIN_POSITION;
-    protected double          limitPositionMax = MAX_POSITION;
-
+public class FakeServo extends ServoImpl {
     private double servoPosition;
+
+    private int portNumber;
+
+    public FakeServo() {
+        this(0);
+    }
+
+    public FakeServo(final int portNumber) {
+        super(null, portNumber);
+        this.portNumber = portNumber;
+        controller = new FakeServoController();
+    }
 
     @Override
     public ServoController getController() {
@@ -41,48 +48,7 @@ public class FakeServo implements Servo {
 
     @Override
     public int getPortNumber() {
-        return 0;
-    }
-
-    @Override
-    public void setDirection(Direction direction) {
-        this.direction = direction;
-    }
-
-    @Override
-    public Direction getDirection() {
-        return direction;
-    }
-
-    @Override
-    public void setPosition(double position) {
-        position = Range.clip(position, MIN_POSITION, MAX_POSITION);
-
-        double scaled = Range.scale(position, MIN_POSITION, MAX_POSITION, limitPositionMin, limitPositionMax);
-
-        servoPosition = scaled;
-    }
-
-    @Override
-    public double getPosition() {
-        double reportedPosition = servoPosition;
-
-        double scaled = Range.scale(reportedPosition, limitPositionMin, limitPositionMax, MIN_POSITION, MAX_POSITION);
-
-        return Range.clip(scaled, MIN_POSITION, MAX_POSITION);
-    }
-
-    @Override
-    public void scaleRange(double min, double max) {
-        min = Range.clip(min, MIN_POSITION, MAX_POSITION);
-        max = Range.clip(max, MIN_POSITION, MAX_POSITION);
-
-        if (min >= max) {
-            throw new IllegalArgumentException("min must be less than max");
-        }
-
-        limitPositionMin = min;
-        limitPositionMax = max;
+        return portNumber;
     }
 
     @Override
@@ -100,24 +66,60 @@ public class FakeServo implements Servo {
         throw new IllegalArgumentException("Not implemented");
     }
 
-    @Override
-    public int getVersion() {
-        return 0;
-    }
+    class FakeServoController implements ServoController {
+        @Override
+        public void pwmEnable() {
 
-    @Override
-    public void resetDeviceConfigurationForOpMode() {
-        this.limitPositionMin = MIN_POSITION;
-        this.limitPositionMax = MAX_POSITION;
-        this.direction = Direction.FORWARD;
-    }
+        }
 
-    @Override
-    public void close() {
+        @Override
+        public void pwmDisable() {
 
-    }
+        }
 
-    private double reverse(double position) {
-        return MAX_POSITION - position + MIN_POSITION;
+        @Override
+        public PwmStatus getPwmStatus() {
+            return null;
+        }
+
+        @Override
+        public void setServoPosition(int servo, double position) {
+            servoPosition = position;
+        }
+
+        @Override
+        public double getServoPosition(int servo) {
+            return servoPosition;
+        }
+
+        @Override
+        public Manufacturer getManufacturer() {
+            throw new IllegalArgumentException("Not implemented");
+        }
+
+        @Override
+        public String getDeviceName() {
+            throw new IllegalArgumentException("Not implemented");
+        }
+
+        @Override
+        public String getConnectionInfo() {
+            throw new IllegalArgumentException("Not implemented");
+        }
+
+        @Override
+        public int getVersion() {
+            return 1;
+        }
+
+        @Override
+        public void resetDeviceConfigurationForOpMode() {
+
+        }
+
+        @Override
+        public void close() {
+
+        }
     }
 }
