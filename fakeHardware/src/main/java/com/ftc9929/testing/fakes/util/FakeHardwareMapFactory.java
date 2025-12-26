@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020 The Tech Ninja Team (https://ftc9929.com)
+ Copyright (c) 2025 The Tech Ninja Team (https://ftc9929.com)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,10 @@ import com.ftc9929.testing.fakes.drive.FakeCRServo;
 import com.ftc9929.testing.fakes.drive.FakeDcMotorEx;
 import com.ftc9929.testing.fakes.drive.FakeRevBlinkinLedDriver;
 import com.ftc9929.testing.fakes.drive.FakeServo;
+import com.ftc9929.testing.fakes.sensors.FakeAnalogInput;
 import com.ftc9929.testing.fakes.sensors.FakeDigitalChannel;
 import com.ftc9929.testing.fakes.sensors.FakeDistanceSensor;
+import com.ftc9929.testing.fakes.sensors.FakeLynxI2cColorRangeSensor;
 import com.ftc9929.testing.fakes.sensors.FakeRevTouchSensor;
 import com.ftc9929.testing.fakes.sensors.FakeVoltageSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -67,6 +69,8 @@ public class FakeHardwareMapFactory {
     public static final String REV_TOUCH_SENSOR_TAG_NAME = "RevTouchSensor";
     public static final String REV_BLINKINLED_DRIVER_TAG_NAME = "RevBlinkinLedDriver";
     public static final String CR_SERVO_TAG_NAME = "ContinuousRotationServo";
+    public static final String ANALOG_INPUT_TAG_NAME = "AnalogInput";
+    public static final String LYNX_COLOR_SENSOR_TAG_NAME = "LynxColorSensor";
 
     /**
      * Loads the hardware map with the name &quot;hardwareMapName&quot; from the location used by
@@ -152,6 +156,8 @@ public class FakeHardwareMapFactory {
             addAllServos(doc);
 
             addAllDigitalChannels(doc);
+            addAllAnalogInputs(doc);
+            addAllLynxColorSensors(doc);
             addAllRevTouchSensors(doc);
             addAllRevBlinkinledDrivers(doc);
 
@@ -189,6 +195,34 @@ public class FakeHardwareMapFactory {
                     hardwareMap.put(name, fakeDigitalChannel);
 
                     hardwareMap.digitalChannel.put(name, fakeDigitalChannel);
+                }
+            });
+        }
+
+        private void addAllAnalogInputs(Document doc) {
+            NodeList analogInputs = doc.getElementsByTagName(ANALOG_INPUT_TAG_NAME);
+
+            addDevices(analogInputs, new DeviceFromXml() {
+                @Override
+                public void addDeviceToHardwareMap(String name, int portNumber) {
+                    final FakeAnalogInput fakeAnalogInput = new FakeAnalogInput();
+
+                    hardwareMap.put(name, fakeAnalogInput);
+                    hardwareMap.analogInput.put(name, fakeAnalogInput);
+                }
+            });
+        }
+
+        private void addAllLynxColorSensors(Document doc) {
+            NodeList lynxColorSensors = doc.getElementsByTagName(LYNX_COLOR_SENSOR_TAG_NAME);
+
+            addDevices(lynxColorSensors, new DeviceFromXml() {
+                @Override
+                public void addDeviceToHardwareMap(String name, int portNumber) {
+                    final FakeLynxI2cColorRangeSensor fakeColorSensor = new FakeLynxI2cColorRangeSensor();
+
+                    hardwareMap.put(name, fakeColorSensor);
+                    hardwareMap.colorSensor.put(name, fakeColorSensor);
                 }
             });
         }

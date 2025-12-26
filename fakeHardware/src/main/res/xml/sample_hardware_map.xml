@@ -174,7 +174,9 @@
 
             <!-- V1 and V2 of the REV color/distance sensor -->
 
-            <LynxColorSensor name="[...]" port="0" bus="2" />
+            <LynxColorSensor name="TestColorSensor" port="0" bus="2" />
+
+            <AnalogInput name="TestAnalogInput" port="1" />
 
             <!--
 
