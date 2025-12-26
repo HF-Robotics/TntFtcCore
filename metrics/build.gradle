@@ -16,6 +16,7 @@ dependencies {
     implementation files('libs/java-dogstatsd-client-2.9-SNAPSHOT.jar')
     implementation project(path: ':corelib')
     testImplementation project(path: ':fakeHardware')
+    testImplementation project(path: ':metrics')
 }
 
 group = 'com.ftc9929'
