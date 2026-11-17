@@ -1,4 +1,9 @@
 android {
+    compileSdk 34
+    packagingOptions {
+        jniLibs.useLegacyPackaging true
+    }
+
     signingConfigs {
         release {
             def apkStoreFile = System.getenv("APK_SIGNING_STORE_FILE")
@@ -23,12 +28,9 @@ android {
         }
     }
 
-    compileSdkVersion 27
-    buildToolsVersion '29.0.1'
-
     defaultConfig {
         signingConfig signingConfigs.debug
-        minSdkVersion 19
+        minSdkVersion 24
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 29
         versionCode 1
@@ -38,33 +40,29 @@ android {
 
 dependencies {
     //noinspection Aligned16KB
-    compileOnly 'org.firstinspires.ftc:RobotCore:11.0.0'
-    compileOnly 'org.firstinspires.ftc:Hardware:11.0.0'
-    compileOnly 'org.firstinspires.ftc:FtcCommon:11.0.0'
+    compileOnly 'org.firstinspires.ftc:RobotCore:12.0.0'
+    compileOnly 'org.firstinspires.ftc:Hardware:12.0.0'
+    compileOnly 'org.firstinspires.ftc:FtcCommon:12.0.0'
 
-    compileOnly 'org.projectlombok:lombok:1.18.6'
-    annotationProcessor 'org.projectlombok:lombok:1.18.6'
+    compileOnly 'org.projectlombok:lombok:1.18.48'
+    annotationProcessor 'org.projectlombok:lombok:1.18.48'
 
     // (Required) Writing and executing Unit Tests on the JUnit Platform
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.6.0"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.6.0"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:6.1.3"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:6.1.3"
 
     // (Optional) If you need "Parameterized Tests"
-    testImplementation "org.junit.jupiter:junit-jupiter-params:5.6.0"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:6.1.3"
 
-    // (Optional) If you also have JUnit 4-based tests
-    testImplementation "junit:junit:4.13"
-    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:5.6.0"
-
-    androidTestAnnotationProcessor 'org.projectlombok:lombok:1.18.6'
-    testImplementation 'org.mockito:mockito-core:2.27.0'
-    testImplementation 'com.google.guava:guava-testlib:27.1-android'
+    androidTestAnnotationProcessor 'org.projectlombok:lombok:1.18.48'
+    testImplementation 'org.mockito:mockito-core:5.24.0'
+    testImplementation 'com.google.guava:guava-testlib:33.8.0-android'
 
     //noinspection Aligned16KB
-    testImplementation 'org.firstinspires.ftc:RobotCore:11.0.0'
-    testImplementation 'org.firstinspires.ftc:Hardware:11.0.0'
+    testImplementation 'org.firstinspires.ftc:RobotCore:12.0.0'
+    testImplementation 'org.firstinspires.ftc:Hardware:12.0.0'
 
-    api 'com.google.guava:guava:27.1-android'
+    api 'com.google.guava:guava:33.8.0-android'
 }
 
 project.gradle.startParameter.excludedTaskNames.add('installDebugAndroidTest')

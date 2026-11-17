@@ -29,6 +29,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.concurrent.TimeUnit;
 
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
 /**
@@ -39,8 +40,11 @@ import lombok.NonNull;
  * return 'true' if the timeout specified in the constructor has expired
  */
 
+@EqualsAndHashCode(callSuper = true)
 public abstract class StopwatchTimeoutSafetyState extends State {
     protected final long safetyTimeoutMillis;
+
+    @EqualsAndHashCode.Exclude
     private final Stopwatch stopwatch;
 
     protected StopwatchTimeoutSafetyState(@NonNull final String name,

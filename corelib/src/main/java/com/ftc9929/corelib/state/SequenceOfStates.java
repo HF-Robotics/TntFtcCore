@@ -24,6 +24,7 @@ package com.ftc9929.corelib.state;
 
 import android.util.Log;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,8 @@ import com.google.common.base.Ticker;
 import org.firstinspires.ftc.robotcore.external.Function;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -43,6 +46,7 @@ import java.util.concurrent.TimeUnit;
  * sets up the linkages between states in a sequence.
  */
 @RequiredArgsConstructor
+@EqualsAndHashCode
 public class SequenceOfStates {
     @Getter
     protected State firstState;
@@ -50,12 +54,18 @@ public class SequenceOfStates {
     @Getter
     protected State lastState;
 
+    private List<State> allStates = new ArrayList<>();
+
+    @EqualsAndHashCode.Exclude
     protected final Ticker ticker;
 
+    @EqualsAndHashCode.Exclude
     protected final Telemetry telemetry;
 
     public void addSequential(@NonNull State state) {
         Log.d(LOG_TAG, String.format("addSequential(%s)", stateClassAndName(state)));
+
+        allStates.add(state);
 
         if (firstState == null) {
             firstState = state;

@@ -25,6 +25,9 @@ package com.ftc9929.corelib.state;
 import org.firstinspires.ftc.robotcore.external.Function;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode(callSuper = true)
 public class RepeatingLambdaState extends State {
     private final Function<State, Boolean> lambda;
 

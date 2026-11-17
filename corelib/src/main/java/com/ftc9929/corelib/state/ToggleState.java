@@ -27,12 +27,14 @@ import com.ftc9929.corelib.control.NinjaGamePad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
 /**
  * A state that will perform an action when a button press causes a toggling effect
  * (one press for "on", one press for "off").
  */
+@EqualsAndHashCode(callSuper = true)
 public abstract class ToggleState extends State {
     private boolean toggled = false;
 

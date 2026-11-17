@@ -26,6 +26,7 @@ import com.ftc9929.corelib.control.NinjaGamePad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
 /**
@@ -35,6 +36,7 @@ import lombok.NonNull;
  * Typically used to place the robot in a "safe" state at the end of
  * autonomous, by setting all motor powers to 0, moving servos to safe positions, etc.
  */
+@EqualsAndHashCode(callSuper = true)
 public abstract class TerminalState extends State {
     private boolean hasRun = false;
 

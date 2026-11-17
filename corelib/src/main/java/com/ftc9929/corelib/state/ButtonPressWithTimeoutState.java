@@ -23,14 +23,15 @@
 package com.ftc9929.corelib.state;
 
 import com.ftc9929.corelib.control.DebouncedButton;
-import com.ftc9929.corelib.control.NinjaGamePad;
 import com.google.common.base.Ticker;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.Setter;
 
+@EqualsAndHashCode(callSuper = true)
 public class ButtonPressWithTimeoutState extends StopwatchTimeoutSafetyState {
     private final DebouncedButton button;
 

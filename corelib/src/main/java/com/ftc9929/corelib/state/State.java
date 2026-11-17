@@ -23,21 +23,19 @@
 package com.ftc9929.corelib.state;
 
 
-import android.util.Log;
-
-import com.ftc9929.corelib.control.NinjaGamePad;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-
-import static com.ftc9929.corelib.Constants.LOG_TAG;
 
 /**
  * Base class for all state machine states
  */
+@EqualsAndHashCode
 public abstract class State {
     protected State nextState;
+
+    @EqualsAndHashCode.Exclude
     protected final Telemetry telemetry;
 
     protected final String name;

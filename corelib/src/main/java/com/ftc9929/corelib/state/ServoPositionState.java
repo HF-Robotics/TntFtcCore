@@ -27,12 +27,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
 /**
  * A simple State implementation that puts the given servo in the given position and
  * then transitions to the next State.
  */
+@EqualsAndHashCode(callSuper = true)
 public class ServoPositionState extends State {
     Servo servo;
     private double servoPosition;

@@ -30,15 +30,18 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.concurrent.TimeUnit;
 
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
 /**
  * A delay state that takes a stopwatch as the time source, to make it possible to advance the
  * elapsed time with a test ticker.
  */
+@EqualsAndHashCode(callSuper = true)
 public class StopwatchDelayState extends State {
     private long thresholdTimeMs;
 
+    @EqualsAndHashCode.Exclude
     private final Stopwatch stopwatch;
 
     public StopwatchDelayState(@NonNull String name,

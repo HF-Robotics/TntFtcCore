@@ -50,7 +50,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -122,13 +121,12 @@ public class FakeHardwareMapFactory {
             }
         }) {
 
-            @Nullable
             @Override
             public <T> T tryGet(Class<? extends T> classOrInterface, String deviceName) {
                 synchronized (lock) {
                     deviceName = deviceName.trim();
                     List<HardwareDevice> list = allDevicesMap.get(deviceName);
-                    @Nullable T result = null;
+                    T result = null;
 
                     if (list != null) {
                         for (HardwareDevice device : list) {

@@ -26,11 +26,13 @@ import com.ftc9929.corelib.control.NinjaGamePad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
 /**
  * Takes a java.lang.Runnable and turns it into a State machine state
  */
+@EqualsAndHashCode(callSuper = true)
 public class RunnableState extends State {
     private final Runnable task;
 

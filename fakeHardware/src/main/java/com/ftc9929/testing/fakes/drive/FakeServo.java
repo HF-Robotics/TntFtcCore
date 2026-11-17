@@ -93,6 +93,11 @@ public class FakeServo extends ServoImpl {
         }
 
         @Override
+        public void forgetLastKnownPosition(int servo) {
+
+        }
+
+        @Override
         public Manufacturer getManufacturer() {
             throw new IllegalArgumentException("Not implemented");
         }
