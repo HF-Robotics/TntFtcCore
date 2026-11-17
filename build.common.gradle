@@ -66,3 +66,4 @@ dependencies {
 }
 
 project.gradle.startParameter.excludedTaskNames.add('installDebugAndroidTest')
+project.gradle.startParameter.excludedTaskNames.add('androidJavadocs')
